@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>M&M Check-In — NYP Plastic Surgery</title>
+<style>
+  :root {
+    --nyp-blue:      #076CA5;
+    --nyp-blue-med:  #004769;
+    --nyp-blue-dark: #00324A;
+    --nyp-red:       #E2231A;
+    --nyp-green:     #588141;
+    --nyp-gray-light:#F6F6F6;
+    --nyp-gray-med:  #D0D0D1;
+    --nyp-gray-dark: #63666A;
+    --nyp-black:     #1A1A1A;
+    --bg:            #F0F4F8;
+    --card:          #FFFFFF;
+    --border:        #D0D0D1;
+    --success-bg:    #EEF4EA;
+  }
+  * { box-sizing:border-box; margin:0; padding:0; -webkit-tap-highlight-color:transparent; }
+  body {
+    font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;
+    background:var(--bg); color:var(--nyp-black);
+    min-height:100vh; display:flex; flex-direction:column;
+  }
+
+  /* HEADER */
+  .header { background:var(--nyp-blue-dark); padding:0 24px 32px; }
+  .stripe { height:4px; background:var(--nyp-red); margin-bottom:28px; }
+  .badge {
+    display:inline-block; background:var(--nyp-red); color:#fff;
+    font-size:9px; letter-spacing:0.12em; text-transform:uppercase;
+    padding:3px 8px; border-radius:3px; margin-bottom:16px;
+  }
+  .header h1 { font-size:28px; font-weight:700; color:#fff; line-height:1.2; margin-bottom:6px; }
+  .session-pill {
+    display:inline-flex; align-items:center; gap:8px;
+    background:rgba(255,255,255,0.1); border-radius:99px;
+    padding:6px 14px; margin-top:10px;
+  }
+  .session-dot { width:7px; height:7px; border-radius:50%; background:#5ECC8A; animation:blink 2s infinite; }
+  @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0.4} }
+  .session-text { font-size:12px; color:rgba(255,255,255,0.8); letter-spacing:0.03em; }
+
+  /* FORM CARD */
+  .body { padding:28px 24px; flex:1; }
+  .card {
+    background:var(--card); border-radius:14px;
+    border:1px solid var(--border); border-top:3px solid var(--nyp-blue);
+    padding:28px 24px; max-width:440px; margin:0 auto;
+  }
+  .card h2 { font-size:18px; font-weight:700; color:var(--nyp-blue-med); margin-bottom:4px; }
+  .card p  { font-size:13px; color:var(--nyp-gray-dark); margin-bottom:24px; line-height:1.5; }
+
+  .form-label {
+    display:block; font-size:11px; letter-spacing:0.1em;
+    text-transform:uppercase; color:var(--nyp-gray-dark); margin-bottom:6px;
+  }
+  .text-input {
+    width:100%; font-family:inherit; font-size:16px;
+    padding:13px 16px; border:1.5px solid var(--border);
+    border-radius:8px; background:var(--nyp-gray-light);
+    color:var(--nyp-black); outline:none; margin-bottom:18px;
+    transition:border-color 0.2s, box-shadow 0.2s;
+  }
+  .text-input:focus {
+    border-color:var(--nyp-blue);
+    box-shadow:0 0 0 3px rgba(7,108,165,0.12);
+    background:#fff;
+  }
+
+  /* ROLE GRID */
+  .role-grid {
+    display:grid; grid-template-columns:1fr 1fr;
+    gap:8px; margin-bottom:24px;
+  }
+  .role-btn {
+    padding:12px 8px; border:1.5px solid var(--border);
+    border-radius:10px; background:var(--nyp-gray-light);
+    font-family:inherit; font-size:13px; font-weight:500;
+    color:var(--nyp-gray-dark); cursor:pointer; text-align:center;
+    transition:all 0.15s;
+  }
+  .role-btn .role-icon { display:block; font-size:20px; margin-bottom:4px; }
+  .role-btn.selected {
+    border-color:var(--nyp-blue); background:#E8F2F9;
+    color:var(--nyp-blue-med); font-weight:700;
+  }
+  .role-btn:active { transform:scale(0.97); }
+
+  .submit-btn {
+    width:100%; background:var(--nyp-blue-med); color:#fff;
+    font-family:inherit; font-size:16px; font-weight:700;
+    padding:16px; border:none; border-radius:10px;
+    cursor:pointer; letter-spacing:0.01em;
+    transition:background 0.2s, transform 0.1s;
+    position:relative;
+  }
+  .submit-btn:active { transform:scale(0.98); }
+  .submit-btn:disabled { opacity:0.6; cursor:default; }
+  .submit-btn.loading::after {
+    content:''; position:absolute; right:20px; top:50%;
+    transform:translateY(-50%);
+    width:16px; height:16px; border-radius:50%;
+    border:2px solid rgba(255,255,255,0.4);
+    border-top-color:#fff;
+    animation:spin 0.7s linear infinite;
+  }
+  @keyframes spin { to{ transform:translateY(-50%) rotate(360deg); } }
+
+  /* SUCCESS STATE */
+  .success-screen {
+    display:none; text-align:center;
+    padding:40px 24px; max-width:440px; margin:0 auto;
+  }
+  .success-screen.visible { display:block; }
+  .checkmark-circle {
+    width:80px; height:80px; border-radius:50%;
+    background:var(--success-bg); margin:0 auto 20px;
+    display:flex; align-items:center; justify-content:center;
+    font-size:36px;
+    animation:pop 0.4s cubic-bezier(0.34,1.56,0.64,1);
+  }
+  @keyframes pop { 0%{transform:scale(0)} 100%{transform:scale(1)} }
+  .success-name { font-size:22px; font-weight:700; color:var(--nyp-blue-med); margin-bottom:6px; }
+  .success-sub  { font-size:14px; color:var(--nyp-gray-dark); margin-bottom:6px; line-height:1.5; }
+  .success-session { 
+    font-size:13px; color:var(--nyp-green); font-weight:600;
+    background:var(--success-bg); border-radius:99px;
+    padding:6px 18px; display:inline-block; margin:12px 0 28px;
+  }
+  .again-btn {
+    background:transparent; border:1.5px solid var(--border);
+    border-radius:10px; padding:12px 28px;
+    font-family:inherit; font-size:14px; color:var(--nyp-gray-dark);
+    cursor:pointer; transition:all 0.15s;
+  }
+  .again-btn:hover { background:var(--nyp-gray-light); }
+
+  /* ERROR */
+  .error-msg {
+    background:#FBE9E8; border-left:3px solid var(--nyp-red);
+    border-radius:0 8px 8px 0; padding:10px 14px;
+    font-size:13px; color:#AD1C14; margin-bottom:16px; display:none;
+  }
+  .error-msg.visible { display:block; }
+
+  /* FOOTER */
+  .footer {
+    text-align:center; padding:20px;
+    font-size:11px; color:var(--nyp-gray-med);
+  }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="stripe"></div>
+  <div class="badge">NYP · Plastic Surgery</div>
+  <h1>M&M Check-In</h1>
+  <div class="session-pill">
+    <div class="session-dot"></div>
+    <span class="session-text" id="sessionLabel">Loading session...</span>
+  </div>
+</div>
+
+<div class="body">
+
+  <!-- FORM -->
+  <div class="card" id="formCard">
+    <h2>Sign in to today's session</h2>
+    <p>Your name is kept private. Only an anonymized count appears on the shared attendance board.</p>
+
+    <div class="error-msg" id="errorMsg">Please enter your name and select a role.</div>
+
+    <label class="form-label">Your name</label>
+    <input class="text-input" type="text" id="nameInput"
+           placeholder="e.g. Dr. Smith or Jane Lee (MS3)"
+           autocomplete="name" />
+
+    <label class="form-label">Role</label>
+    <div class="role-grid">
+      <button class="role-btn" onclick="selectRole(this,'Attending')">
+        <span class="role-icon">👨‍⚕️</span>Attending
+      </button>
+      <button class="role-btn" onclick="selectRole(this,'Resident')">
+        <span class="role-icon">🩺</span>Resident
+      </button>
+      <button class="role-btn" onclick="selectRole(this,'Fellow')">
+        <span class="role-icon">🔬</span>Fellow
+      </button>
+      <button class="role-btn" onclick="selectRole(this,'Med Student')">
+        <span class="role-icon">📚</span>Med Student
+      </button>
+      <button class="role-btn" onclick="selectRole(this,'Nurse/PA')">
+        <span class="role-icon">💊</span>Nurse / PA
+      </button>
+      <button class="role-btn" onclick="selectRole(this,'Other Faculty')">
+        <span class="role-icon">🏥</span>Other Faculty
+      </button>
+    </div>
+
+    <button class="submit-btn" id="submitBtn" onclick="submitCheckin()">
+      Check In Now
+    </button>
+  </div>
+
+  <!-- SUCCESS -->
+  <div class="success-screen" id="successScreen">
+    <div class="checkmark-circle">✓</div>
+    <div class="success-name" id="successName"></div>
+    <div class="success-sub">You're checked in for</div>
+    <div class="success-session" id="successSession"></div>
+    <div class="success-sub" style="color:var(--nyp-gray-dark);margin-bottom:24px">
+      Your attendance has been logged.<br>You can close this tab.
+    </div>
+    <button class="again-btn" onclick="resetForm()">Check in someone else</button>
+  </div>
+
+</div>
+
+<div class="footer">NewYork-Presbyterian · Division of Plastic Surgery</div>
+
+<script>
+const SB_URL = 'https://xsksttmpqcsbdapixmov.supabase.co';
+const SB_KEY = 'sb_publishable__D7Vmr2PW5x4NGckZ40H4A_82634lf1';
+
+const MONTHS = ['January','February','March','April','May','June',
+                'July','August','September','October','November','December'];
+
+let selectedRole = null;
+
+// ── Session label ──
+function getSessionLabel(){
+  const now = new Date();
+  return `${MONTHS[now.getMonth()]} ${now.getFullYear()} M&M Conference`;
+}
+
+document.getElementById('sessionLabel').textContent = getSessionLabel();
+
+// ── Role selection ──
+function selectRole(btn, role){
+  document.querySelectorAll('.role-btn').forEach(b=>b.classList.remove('selected'));
+  btn.classList.add('selected');
+  selectedRole = role;
+}
+
+// ── Unique ID per device ──
+function getUid(){
+  let id = localStorage.getItem('checkin_uid');
+  if(!id){ id='ci_'+Math.random().toString(36).slice(2,10); localStorage.setItem('checkin_uid',id); }
+  return id;
+}
+
+// ── Supabase upsert ──
+async function logToSupabase(name, role){
+  const now  = new Date();
+  const year = now.getFullYear();
+  const month= now.getMonth();
+  const uid  = getUid();
+
+  const res = await fetch(`${SB_URL}/rest/v1/attendance_log`, {
+    method:'POST',
+    headers:{
+      'apikey': SB_KEY,
+      'Authorization': `Bearer ${SB_KEY}`,
+      'Content-Type': 'application/json',
+      'Prefer': 'resolution=merge-duplicates'
+    },
+    body: JSON.stringify({
+      uid, year, month,
+      attended: true,
+      name, role,
+      updated_at: now.toISOString()
+    })
+  });
+  if(!res.ok) throw new Error(`Supabase error: ${res.status}`);
+}
+
+// ── Submit ──
+async function submitCheckin(){
+  const name = document.getElementById('nameInput').value.trim();
+  const err  = document.getElementById('errorMsg');
+
+  if(!name || !selectedRole){
+    err.classList.add('visible');
+    return;
+  }
+  err.classList.remove('visible');
+
+  const btn = document.getElementById('submitBtn');
+  btn.disabled = true;
+  btn.classList.add('loading');
+  btn.textContent = 'Logging attendance...';
+
+  try {
+    await logToSupabase(name, selectedRole);
+    // Show success
+    document.getElementById('formCard').style.display = 'none';
+    const s = document.getElementById('successScreen');
+    s.classList.add('visible');
+    document.getElementById('successName').textContent = name;
+    document.getElementById('successSession').textContent = getSessionLabel();
+  } catch(e){
+    btn.disabled = false;
+    btn.classList.remove('loading');
+    btn.textContent = 'Check In Now';
+    err.textContent = 'Something went wrong — please try again.';
+    err.classList.add('visible');
+    console.error(e);
+  }
+}
+
+// ── Reset for next person ──
+function resetForm(){
+  document.getElementById('nameInput').value = '';
+  document.querySelectorAll('.role-btn').forEach(b=>b.classList.remove('selected'));
+  selectedRole = null;
+  document.getElementById('formCard').style.display = 'block';
+  document.getElementById('successScreen').classList.remove('visible');
+  document.getElementById('submitBtn').disabled = false;
+  document.getElementById('submitBtn').classList.remove('loading');
+  document.getElementById('submitBtn').textContent = 'Check In Now';
+}
+
+// Allow Enter on name field
+document.getElementById('nameInput').addEventListener('keydown', e=>{
+  if(e.key==='Enter' && selectedRole) submitCheckin();
+});
+</script>
+</body>
+</html>
