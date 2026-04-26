@@ -1,0 +1,804 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>M&M CME Tracker — NYP Plastic Surgery</title>
+
+<style>
+  :root {
+    /* NYP Brand Colors */
+    --nyp-blue:        #076CA5;
+    --nyp-blue-med:    #004769;
+    --nyp-blue-dark:   #00324A;
+    --nyp-red:         #E2231A;
+    --nyp-red-med:     #AD1C14;
+    --nyp-green:       #588141;
+    --nyp-gray:        #9D9D9E;
+    --nyp-gray-light:  #F6F6F6;
+    --nyp-gray-med:    #D0D0D1;
+    --nyp-gray-dark:   #63666A;
+    --nyp-black:       #1A1A1A;
+    --nyp-white:       #FFFFFF;
+
+    --bg:           #F0F4F8;
+    --card:         #FFFFFF;
+    --accent:       var(--nyp-blue-med);
+    --accent-dark:  var(--nyp-blue-dark);
+    --accent-light: #E8F2F9;
+    --highlight:    var(--nyp-blue);
+    --danger:       var(--nyp-red-med);
+    --danger-bg:    #FBE9E8;
+    --success:      var(--nyp-green);
+    --success-bg:   #EEF4EA;
+    --text:         var(--nyp-black);
+    --muted:        var(--nyp-gray-dark);
+    --border:       var(--nyp-gray-med);
+    --divider:      #E4EAF0;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+
+  body {
+    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    padding-bottom: 48px;
+  }
+
+  /* ── HEADER ── */
+  .header {
+    background: var(--nyp-blue-dark);
+    padding: 0 20px 28px;
+    position: relative;
+    overflow: hidden;
+  }
+  .header-stripe {
+    height: 4px;
+    background: var(--nyp-red);
+    margin-bottom: 24px;
+  }
+  .header-logo-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 18px;
+  }
+  .nyp-badge {
+    background: var(--nyp-red);
+    color: #fff;
+    font-family: 'DM Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    padding: 3px 8px;
+    border-radius: 3px;
+  }
+  .header-inst {
+    font-size: 12px;
+    color: rgba(255,255,255,0.55);
+    letter-spacing: 0.04em;
+  }
+  .header h1 {
+    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    font-size: 28px;
+    color: #fff;
+    line-height: 1.2;
+    margin-bottom: 4px;
+  }
+  .header-sub {
+    font-size: 13px;
+    color: rgba(255,255,255,0.5);
+    font-weight: 300;
+    letter-spacing: 0.02em;
+  }
+  .header-rule {
+    position: absolute;
+    right: 0; top: 0; bottom: 0;
+    width: 3px;
+    background: var(--nyp-blue);
+    opacity: 0.4;
+  }
+
+  /* ── NAME SCREEN ── */
+  .name-screen { padding: 32px 20px; }
+  .name-card {
+    background: var(--card);
+    border-radius: 14px;
+    padding: 28px 24px;
+    border: 1px solid var(--border);
+    border-top: 3px solid var(--nyp-blue);
+  }
+  .name-card h2 {
+    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    font-size: 22px;
+    margin-bottom: 8px;
+    color: var(--accent);
+  }
+  .name-card p {
+    font-size: 14px;
+    color: var(--muted);
+    margin-bottom: 24px;
+    line-height: 1.6;
+  }
+  .form-label {
+    display: block;
+    font-size: 11px;
+    font-family: 'DM Mono', monospace;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 6px;
+  }
+  .name-input {
+    width: 100%;
+    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    font-size: 16px;
+    padding: 13px 16px;
+    border: 1.5px solid var(--border);
+    border-radius: 8px;
+    background: var(--nyp-gray-light);
+    color: var(--text);
+    outline: none;
+    margin-bottom: 20px;
+    transition: border-color 0.2s, box-shadow 0.2s;
+  }
+  .name-input:focus {
+    border-color: var(--nyp-blue);
+    box-shadow: 0 0 0 3px rgba(7,108,165,0.12);
+    background: #fff;
+  }
+  .btn-primary {
+    width: 100%;
+    background: var(--nyp-blue-med);
+    color: #fff;
+    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    font-size: 15px;
+    font-weight: 600;
+    padding: 14px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    letter-spacing: 0.02em;
+    transition: background 0.2s, transform 0.1s;
+  }
+  .btn-primary:active { transform: scale(0.98); background: var(--nyp-blue-dark); }
+
+  .role-row {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 20px;
+  }
+  .role-btn {
+    flex: 1;
+    padding: 10px 6px;
+    border: 1.5px solid var(--border);
+    border-radius: 8px;
+    background: var(--nyp-gray-light);
+    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    font-size: 13px;
+    color: var(--muted);
+    cursor: pointer;
+    text-align: center;
+    transition: all 0.15s;
+  }
+  .role-btn.selected {
+    border-color: var(--nyp-blue);
+    background: var(--accent-light);
+    color: var(--nyp-blue-med);
+    font-weight: 600;
+  }
+
+  /* ── APP ── */
+  .app { display: none; }
+
+  /* ── YEAR NAV ── */
+  .year-bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 14px 20px;
+    background: var(--card);
+    border-bottom: 1px solid var(--divider);
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    box-shadow: 0 1px 4px rgba(0,50,74,0.06);
+  }
+  .year-btn {
+    width: 34px; height: 34px;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    background: transparent;
+    cursor: pointer;
+    font-size: 15px;
+    color: var(--nyp-blue-med);
+    display: flex; align-items: center; justify-content: center;
+    transition: background 0.15s;
+  }
+  .year-btn:active { background: var(--accent-light); }
+  .year-label {
+    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    font-size: 20px;
+    color: var(--accent);
+  }
+
+  /* ── STATS ── */
+  .stats-row {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+    padding: 16px 20px;
+  }
+  .stat-card {
+    background: var(--card);
+    border-radius: 10px;
+    padding: 14px 10px;
+    border: 1px solid var(--divider);
+    text-align: center;
+    border-top: 2px solid var(--nyp-blue);
+  }
+  .stat-card.red-top { border-top-color: var(--nyp-red); }
+  .stat-card.green-top { border-top-color: var(--nyp-green); }
+  .stat-val {
+    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    font-size: 26px;
+    line-height: 1;
+    margin-bottom: 4px;
+    color: var(--nyp-blue-med);
+  }
+  .stat-val.green { color: var(--nyp-green); }
+  .stat-val.gray { color: var(--nyp-gray-dark); }
+  .stat-label {
+    font-size: 10px;
+    font-family: 'DM Mono', monospace;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+
+  /* ── GREETING ── */
+  .greeting {
+    padding: 2px 20px 4px;
+    font-size: 13px;
+    color: var(--muted);
+  }
+  .greeting strong { color: var(--text); font-weight: 600; }
+
+  /* ── SECTION LABEL ── */
+  .section-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--nyp-blue);
+    padding: 16px 20px 8px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .section-label::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: var(--divider);
+  }
+
+  /* ── MONTH LIST ── */
+  .month-list { padding: 0 20px; }
+
+  .month-item {
+    background: var(--card);
+    border: 1px solid var(--divider);
+    border-radius: 12px;
+    margin-bottom: 9px;
+    overflow: hidden;
+    transition: box-shadow 0.2s;
+  }
+  .month-item.attended {
+    border-color: #B8D4A8;
+    background: #FAFDF8;
+  }
+  .month-item:not(.future):hover { box-shadow: 0 2px 8px rgba(0,50,74,0.08); }
+
+  .month-row {
+    display: flex;
+    align-items: center;
+    padding: 14px 16px;
+    gap: 13px;
+    cursor: pointer;
+    user-select: none;
+  }
+  .month-dot {
+    width: 9px; height: 9px;
+    border-radius: 50%;
+    border: 2px solid var(--border);
+    flex-shrink: 0;
+    transition: all 0.2s;
+  }
+  .month-item.attended .month-dot {
+    background: var(--nyp-green);
+    border-color: var(--nyp-green);
+  }
+  .month-item.future .month-dot { border-style: dashed; border-color: var(--nyp-gray-med); }
+
+  .month-info { flex: 1; min-width: 0; }
+  .month-name { font-size: 15px; font-weight: 600; margin-bottom: 1px; color: var(--text); }
+  .month-meta { font-size: 12px; color: var(--muted); font-family: 'DM Mono', monospace; }
+  .month-item.attended .month-meta { color: var(--nyp-green); }
+
+  .month-badge {
+    font-size: 11px;
+    font-family: 'DM Mono', monospace;
+    letter-spacing: 0.04em;
+    padding: 4px 10px;
+    border-radius: 99px;
+    flex-shrink: 0;
+  }
+  .badge-done { background: var(--success-bg); color: var(--nyp-green); }
+  .badge-missed { background: #F5F5F5; color: var(--muted); }
+  .badge-future { background: var(--nyp-gray-light); color: var(--nyp-gray-med); }
+
+  /* ── EXPAND ── */
+  .month-expand {
+    display: none;
+    border-top: 1px solid var(--divider);
+    padding: 16px;
+    background: var(--nyp-gray-light);
+  }
+  .month-item.open .month-expand { display: block; }
+
+  .credits-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 14px;
+  }
+  .credits-label { font-size: 13px; color: var(--muted); width: 90px; flex-shrink: 0; }
+  .credits-input {
+    font-family: 'DM Mono', monospace;
+    font-size: 15px;
+    width: 80px;
+    padding: 8px 12px;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    background: #fff;
+    color: var(--text);
+    outline: none;
+    text-align: center;
+    transition: border-color 0.2s;
+  }
+  .credits-input:focus { border-color: var(--nyp-blue); }
+  .credits-input:disabled { opacity: 0.4; }
+
+  .action-btn {
+    width: 100%;
+    padding: 13px;
+    border-radius: 8px;
+    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    border: 1.5px solid;
+    transition: all 0.15s;
+    letter-spacing: 0.01em;
+  }
+  .btn-attend {
+    background: var(--nyp-blue-med);
+    color: #fff;
+    border-color: var(--nyp-blue-med);
+  }
+  .btn-attend:active { background: var(--nyp-blue-dark); transform: scale(0.98); }
+  .btn-unattend {
+    background: transparent;
+    color: var(--nyp-red-med);
+    border-color: #D4AAAA;
+  }
+  .btn-unattend:active { background: var(--danger-bg); }
+
+  .sync-note {
+    font-size: 11px;
+    color: var(--muted);
+    text-align: center;
+    margin-top: 10px;
+    font-family: 'DM Mono', monospace;
+  }
+  .sync-dot {
+    display: inline-block;
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    background: var(--nyp-gray-med);
+    margin-right: 5px;
+    vertical-align: middle;
+    transition: background 0.3s;
+  }
+  .sync-dot.syncing { background: var(--nyp-blue); animation: pulse 1s infinite; }
+  .sync-dot.synced { background: var(--nyp-green); }
+  @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.4} }
+
+  /* ── EXPORT ── */
+  .export-section { padding: 0 20px; }
+  .export-btn {
+    width: 100%;
+    padding: 13px;
+    border-radius: 10px;
+    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    border: 1px solid var(--border);
+    background: var(--card);
+    color: var(--muted);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    transition: all 0.15s;
+  }
+  .export-btn:active { background: var(--accent-light); color: var(--nyp-blue-med); }
+
+  /* ── CME ONLY badge ── */
+  .cme-only-note {
+    margin: 0 20px;
+    padding: 12px 14px;
+    background: var(--accent-light);
+    border-left: 3px solid var(--nyp-blue);
+    border-radius: 0 8px 8px 0;
+    font-size: 12px;
+    color: var(--nyp-blue-med);
+    line-height: 1.5;
+  }
+
+  /* ── CHANGE NAME ── */
+  .change-name {
+    text-align: center;
+    padding: 20px;
+    font-size: 12px;
+    color: var(--nyp-gray-med);
+  }
+  .change-name a { color: var(--nyp-blue); text-decoration: none; }
+
+  /* ── TOAST ── */
+  .toast {
+    position: fixed;
+    bottom: 24px;
+    left: 50%;
+    transform: translateX(-50%) translateY(80px);
+    background: var(--nyp-blue-dark);
+    color: #fff;
+    font-size: 13px;
+    padding: 10px 20px;
+    border-radius: 99px;
+    font-family: 'DM Mono', monospace;
+    transition: transform 0.3s cubic-bezier(0.34,1.56,0.64,1);
+    z-index: 100;
+    white-space: nowrap;
+    pointer-events: none;
+    border-left: 3px solid var(--nyp-red);
+  }
+  .toast.show { transform: translateX(-50%) translateY(0); }
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<div class="header">
+  <div class="header-stripe"></div>
+  <div class="header-logo-row">
+    <span class="nyp-badge">NYP</span>
+    <span class="header-inst">NewYork-Presbyterian · Plastic Surgery</span>
+  </div>
+  <h1>M&M CME<br>Tracker</h1>
+  <div class="header-sub">Morbidity &amp; Mortality Conference</div>
+  <div class="header-rule"></div>
+</div>
+
+<!-- NAME SETUP -->
+<div class="name-screen" id="nameScreen">
+  <div class="name-card">
+    <h2>Welcome</h2>
+    <p>Set up your personal CME tracker. Your attendance data is stored privately on this device and anonymously synced to the division attendance log.</p>
+
+    <label class="form-label">Your name</label>
+    <input class="name-input" type="text" id="nameInput" placeholder="Dr. Last Name" autocomplete="name" />
+
+    <label class="form-label">Role</label>
+    <div class="role-row" id="roleRow">
+      <button class="role-btn selected" onclick="selectRole(this,'Attending')">Attending</button>
+      <button class="role-btn" onclick="selectRole(this,'Resident')">Resident</button>
+
+      <button class="role-btn" onclick="selectRole(this,'Other')">Other</button>
+    </div>
+
+    <button class="btn-primary" onclick="saveName()">Get Started</button>
+  </div>
+</div>
+
+<!-- MAIN APP -->
+<div class="app" id="app">
+
+  <div class="year-bar">
+    <button class="year-btn" onclick="changeYear(-1)">&#8592;</button>
+    <span class="year-label" id="yearLabel"></span>
+    <button class="year-btn" onclick="changeYear(1)">&#8594;</button>
+  </div>
+
+  <div class="stats-row" id="statsRow"></div>
+
+  <div class="cme-only-note" id="cmeNote"></div>
+
+  <div class="greeting" id="greeting"></div>
+
+  <div class="section-label">Monthly Sessions</div>
+  <div class="month-list" id="monthList"></div>
+
+  <div class="section-label">Export</div>
+  <div class="export-section">
+    <button class="export-btn" onclick="exportCSV()">
+      <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M7 1v8M4 6l3 3 3-3M2 11h10" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      Download my CME summary (CSV)
+    </button>
+  </div>
+
+  <div class="change-name">
+    <a href="#" onclick="resetName()">Change name / switch user</a>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+const MONTHS = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+const SHORT  = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+const STORAGE_KEY = 'mm_attendance_v2';
+let currentYear = new Date().getFullYear();
+let openMonth   = null;
+let selectedRole = 'Attending';
+
+// ── Storage helpers ──
+function getKey(year,m){ return `mm_${year}_${m}`; }
+function getEntry(year,m){
+  const raw = localStorage.getItem(getKey(year,m));
+  return raw ? JSON.parse(raw) : { attended:false, credits:1.0 };
+}
+function saveEntry(year,m,data){ localStorage.setItem(getKey(year,m), JSON.stringify(data)); }
+function getName(){ return localStorage.getItem('mm_name')||''; }
+function getRole(){ return localStorage.getItem('mm_role')||'Attending'; }
+function getUserId(){
+  let id = localStorage.getItem('mm_uid');
+  if(!id){ id='u_'+Math.random().toString(36).slice(2,10); localStorage.setItem('mm_uid',id); }
+  return id;
+}
+
+// ── Role selection ──
+function selectRole(btn, role){
+  document.querySelectorAll('.role-btn').forEach(b=>b.classList.remove('selected'));
+  btn.classList.add('selected');
+  selectedRole = role;
+}
+
+function saveName(){
+  const val = document.getElementById('nameInput').value.trim();
+  if(!val) return;
+  localStorage.setItem('mm_name', val);
+  localStorage.setItem('mm_role', selectedRole);
+  init();
+}
+function resetName(){
+  localStorage.removeItem('mm_name');
+  document.getElementById('nameScreen').style.display='block';
+  document.getElementById('app').style.display='none';
+}
+
+// ── Date helpers ──
+function isFuture(m){
+  const now=new Date();
+  return currentYear>now.getFullYear()||(currentYear===now.getFullYear()&&m>now.getMonth());
+}
+function isPast(m){
+  const now=new Date();
+  return currentYear<now.getFullYear()||(currentYear===now.getFullYear()&&m<=now.getMonth());
+}
+
+// ── Toast ──
+function showToast(msg){
+  const t=document.getElementById('toast');
+  t.textContent=msg; t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'),2200);
+}
+
+// ── Supabase config ──
+const SB_URL = 'https://xsksttmpqcsbdapixmov.supabase.co';
+const SB_KEY = 'sb_publishable__D7Vmr2PW5x4NGckZ40H4A_82634lf1';
+
+async function sbFetch(path, method='GET', body=null){
+  const opts = {
+    method,
+    headers:{
+      'apikey': SB_KEY,
+      'Authorization': `Bearer ${SB_KEY}`,
+      'Content-Type': 'application/json',
+      'Prefer': method==='POST' ? 'resolution=merge-duplicates' : ''
+    }
+  };
+  if(body) opts.body = JSON.stringify(body);
+  return fetch(`${SB_URL}/rest/v1/${path}`, opts);
+}
+
+// ── Sync to shared attendance (anonymous count only) ──
+async function syncAttendance(){
+  const dots = document.querySelectorAll('.sync-dot');
+  dots.forEach(d=>d.className='sync-dot syncing');
+  try {
+    const uid  = getUserId();
+    const year = currentYear;
+    // Build per-month attendance array
+    const months = MONTHS.map((_,i)=>({
+      attended: getEntry(year,i).attended,
+      month: i
+    }));
+    // Upsert into cme_attendance: one row per user per year
+    // Name is stored server-side (admin only); public board only reads counts
+    await sbFetch('cme_attendance', 'POST', {
+      uid,
+      year,
+      name: getName(),
+      role: getRole(),
+      months_attended: months.filter(m=>m.attended).map(m=>m.month),
+      updated_at: new Date().toISOString()
+    });
+    dots.forEach(d=>{ d.className='sync-dot synced'; });
+    setTimeout(()=>dots.forEach(d=>d.className='sync-dot'), 3000);
+  } catch(e){
+    dots.forEach(d=>d.className='sync-dot');
+    console.warn('Sync failed:', e);
+  }
+}
+
+// ── Render ──
+function renderStats(){
+  const entries = MONTHS.map((_,i)=>({e:getEntry(currentYear,i),past:isPast(i)}));
+  const attended = entries.filter(x=>x.e.attended).length;
+  const pastCount = entries.filter(x=>x.past).length;
+  const credits  = entries.filter(x=>x.e.attended).reduce((s,x)=>s+(x.e.credits||0),0);
+  const rate     = pastCount>0 ? Math.round(attended/pastCount*100) : 0;
+  document.getElementById('statsRow').innerHTML=`
+    <div class="stat-card green-top">
+      <div class="stat-val green">${attended}</div>
+      <div class="stat-label">Attended</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-val">${credits%1===0?credits:credits.toFixed(1)}</div>
+      <div class="stat-label">Credits</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-val gray">${rate}%</div>
+      <div class="stat-label">Rate</div>
+    </div>
+  `;
+}
+
+function renderGreeting(){
+  const name=getName(), role=getRole();
+  const now=new Date(), m=now.getMonth();
+  const e=getEntry(now.getFullYear(),m);
+  let msg='';
+  if(currentYear===now.getFullYear()){
+    msg = e.attended
+      ? `<strong>${role} ${name}</strong> — ${SHORT[m]} logged ✓`
+      : `<strong>${role} ${name}</strong> — ${SHORT[m]} not yet logged`;
+  } else {
+    msg=`Viewing <strong>${currentYear}</strong> — ${name}`;
+  }
+  document.getElementById('greeting').innerHTML=msg;
+  document.getElementById('cmeNote').innerHTML=
+    `<strong>CME tracking is on.</strong> Credits claimed here count toward your AMA PRA Category 1 requirements. Confirm designation with your department CME coordinator.`;
+}
+
+function renderMonths(){
+  const list=document.getElementById('monthList');
+  list.innerHTML='';
+  MONTHS.forEach((name,i)=>{
+    const e=getEntry(currentYear,i);
+    const future=isFuture(i), isOpen=openMonth===i;
+    let badge='', meta='';
+    if(e.attended){
+      badge=`<span class="month-badge badge-done">✓ done</span>`;
+      meta=`${e.credits%1===0?e.credits:e.credits.toFixed(1)} credit${e.credits===1?'':'s'} earned`;
+    } else if(future){
+      badge=`<span class="month-badge badge-future">upcoming</span>`;
+      meta='not yet scheduled';
+    } else {
+      badge=`<span class="month-badge badge-missed">not logged</span>`;
+      meta='tap to log attendance';
+    }
+    const div=document.createElement('div');
+    div.className=`month-item${e.attended?' attended':''}${future?' future':''}${isOpen?' open':''}`;
+    div.innerHTML=`
+      <div class="month-row" onclick="toggleOpen(${i})">
+        <div class="month-dot"></div>
+        <div class="month-info">
+          <div class="month-name">${name} ${currentYear}</div>
+          <div class="month-meta">${meta}</div>
+        </div>
+        ${badge}
+      </div>
+      <div class="month-expand">
+        <div class="credits-row">
+          <span class="credits-label">CME Credits</span>
+          <input class="credits-input" type="number" min="0" max="10" step="0.25"
+            value="${e.credits}" ${future?'disabled':''}
+            onchange="updateCredits(${i},this.value)" />
+        </div>
+        ${!future?`
+          ${e.attended
+            ?`<button class="action-btn btn-unattend" onclick="toggleAttend(${i})">Remove attendance</button>`
+            :`<button class="action-btn btn-attend" onclick="toggleAttend(${i})">Mark as attended</button>`
+          }
+          <div class="sync-note"><span class="sync-dot"></span>Synced anonymously to division log</div>
+        `:`<div style="font-size:13px;color:var(--muted);text-align:center;padding:4px 0">Available once the session date arrives</div>`}
+      </div>
+    `;
+    list.appendChild(div);
+  });
+}
+
+function render(){
+  document.getElementById('yearLabel').textContent=currentYear;
+  renderStats(); renderGreeting(); renderMonths();
+}
+
+function toggleOpen(i){ openMonth=openMonth===i?null:i; renderMonths(); }
+
+function toggleAttend(i){
+  const e=getEntry(currentYear,i);
+  e.attended=!e.attended;
+  saveEntry(currentYear,i,e);
+  openMonth=null;
+  render();
+  syncAttendance();
+  showToast(e.attended?`${SHORT[i]} marked attended`:`${SHORT[i]} removed`);
+}
+
+function updateCredits(i,val){
+  const e=getEntry(currentYear,i);
+  e.credits=parseFloat(val)||0;
+  saveEntry(currentYear,i,e);
+  renderStats();
+}
+
+function changeYear(d){ currentYear+=d; openMonth=null; render(); }
+
+function exportCSV(){
+  const name=getName(), role=getRole();
+  const rows=[['Physician','Role','Year','Month','Attended','CME Credits']];
+  MONTHS.forEach((m,i)=>{
+    const e=getEntry(currentYear,i);
+    rows.push([name,role,currentYear,m,e.attended?'Yes':'No',e.credits]);
+  });
+  const csv=rows.map(r=>r.join(',')).join('\n');
+  const a=document.createElement('a');
+  a.href='data:text/csv;charset=utf-8,'+encodeURIComponent(csv);
+  a.download=`CME_MM_${name.replace(/\s+/g,'_')}_${currentYear}.csv`;
+  a.click();
+  showToast('CSV downloaded');
+}
+
+function init(){
+  const name=getName();
+  if(!name){
+    document.getElementById('nameScreen').style.display='block';
+    document.getElementById('app').style.display='none';
+  } else {
+    document.getElementById('nameScreen').style.display='none';
+    document.getElementById('app').style.display='block';
+    render();
+  }
+}
+
+document.getElementById('nameInput').addEventListener('keydown',e=>{ if(e.key==='Enter') saveName(); });
+init();
+</script>
+</body>
+</html>
