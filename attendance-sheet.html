@@ -1,0 +1,526 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>M&M Attendance — NYP Plastic Surgery</title>
+
+<style>
+  :root {
+    --nyp-blue:       #076CA5;
+    --nyp-blue-med:   #004769;
+    --nyp-blue-dark:  #00324A;
+    --nyp-red:        #E2231A;
+    --nyp-green:      #588141;
+    --nyp-gray:       #9D9D9E;
+    --nyp-gray-light: #F6F6F6;
+    --nyp-gray-med:   #D0D0D1;
+    --nyp-gray-dark:  #63666A;
+    --nyp-black:      #1A1A1A;
+    --bg:             #F0F4F8;
+    --card:           #FFFFFF;
+    --border:         #D0D0D1;
+    --divider:        #E4EAF0;
+    --muted:          #63666A;
+    --success:        #588141;
+    --success-bg:     #EEF4EA;
+    --accent-light:   #E8F2F9;
+  }
+  * { box-sizing:border-box; margin:0; padding:0; -webkit-tap-highlight-color:transparent; }
+  body {
+    font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;
+    background:var(--bg);
+    color:var(--nyp-black);
+    min-height:100vh;
+    padding-bottom:48px;
+  }
+
+  /* HEADER */
+  .header { background:var(--nyp-blue-dark); padding:0 20px 28px; }
+  .header-stripe { height:4px; background:var(--nyp-red); margin-bottom:24px; }
+  .header-logo-row { display:flex; align-items:center; gap:10px; margin-bottom:18px; }
+  .nyp-badge {
+    background:var(--nyp-red); color:#fff;
+    font-family:'DM Mono',monospace; font-size:9px;
+    letter-spacing:0.12em; text-transform:uppercase;
+    padding:3px 8px; border-radius:3px;
+  }
+  .header-inst { font-size:12px; color:rgba(255,255,255,0.55); }
+  .header h1 { font-family:'Helvetica Neue',Helvetica,Arial,sans-serif; font-size:26px; font-weight:700; color:#fff; line-height:1.2; margin-bottom:4px; }
+  .header-sub { font-size:13px; color:rgba(255,255,255,0.5); font-weight:300; }
+  .public-pill {
+    display:inline-block;
+    background:rgba(255,255,255,0.12);
+    color:rgba(255,255,255,0.7);
+    font-family:'DM Mono',monospace;
+    font-size:10px; letter-spacing:0.1em;
+    padding:4px 10px; border-radius:99px;
+    margin-top:12px;
+  }
+
+  /* SETUP CARD */
+  .setup-screen { padding:24px 20px; }
+  .setup-card {
+    background:var(--card);
+    border-radius:14px;
+    padding:24px;
+    border:1px solid var(--border);
+    border-top:3px solid var(--nyp-blue);
+    margin-bottom:16px;
+  }
+  .setup-card h2 {
+    font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;
+    font-size:20px; color:var(--nyp-blue-med);
+    margin-bottom:6px;
+  }
+  .setup-card p { font-size:14px; color:var(--muted); margin-bottom:20px; line-height:1.6; }
+  .form-label {
+    display:block; font-size:11px;
+    font-family:'DM Mono',monospace;
+    letter-spacing:0.1em; text-transform:uppercase;
+    color:var(--muted); margin-bottom:6px;
+  }
+  .text-input {
+    width:100%; font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;
+    font-size:16px; padding:12px 14px;
+    border:1.5px solid var(--border); border-radius:8px;
+    background:var(--nyp-gray-light); color:var(--nyp-black);
+    outline:none; margin-bottom:14px;
+    transition:border-color 0.2s, box-shadow 0.2s;
+  }
+  .text-input:focus {
+    border-color:var(--nyp-blue);
+    box-shadow:0 0 0 3px rgba(7,108,165,0.12);
+    background:#fff;
+  }
+  .role-row { display:flex; gap:6px; margin-bottom:18px; flex-wrap:wrap; }
+  .role-btn {
+    flex:1; min-width:72px;
+    padding:9px 6px; border:1.5px solid var(--border);
+    border-radius:8px; background:var(--nyp-gray-light);
+    font-family:'Helvetica Neue',Helvetica,Arial,sans-serif; font-size:13px;
+    color:var(--muted); cursor:pointer; text-align:center;
+    transition:all 0.15s;
+  }
+  .role-btn.selected {
+    border-color:var(--nyp-blue); background:var(--accent-light);
+    color:var(--nyp-blue-med); font-weight:600;
+  }
+  .btn-primary {
+    width:100%; background:var(--nyp-blue-med); color:#fff;
+    font-family:'Helvetica Neue',Helvetica,Arial,sans-serif; font-size:15px; font-weight:600;
+    padding:13px; border:none; border-radius:8px;
+    cursor:pointer; transition:background 0.2s,transform 0.1s;
+  }
+  .btn-primary:active { transform:scale(0.98); background:var(--nyp-blue-dark); }
+
+  /* MAIN VIEW */
+  .main-view { display:none; padding:0 20px; }
+
+  /* YEAR NAV */
+  .year-bar {
+    display:flex; align-items:center; justify-content:space-between;
+    padding:14px 20px; background:var(--card);
+    border-bottom:1px solid var(--divider);
+    position:sticky; top:0; z-index:10;
+    box-shadow:0 1px 4px rgba(0,50,74,0.06);
+  }
+  .year-btn {
+    width:34px; height:34px; border:1px solid var(--border);
+    border-radius:6px; background:transparent; cursor:pointer;
+    font-size:15px; color:var(--nyp-blue-med);
+    display:flex; align-items:center; justify-content:center;
+  }
+  .year-btn:active { background:var(--accent-light); }
+  .year-label { font-family:'Helvetica Neue',Helvetica,Arial,sans-serif; font-size:20px; color:var(--nyp-blue-med); }
+
+  /* COUNTER CARD */
+  .counter-card {
+    background:var(--card);
+    border:1px solid var(--divider);
+    border-top:3px solid var(--nyp-blue);
+    border-radius:12px;
+    padding:20px;
+    margin:16px 0 8px;
+    display:flex; align-items:center; gap:16px;
+  }
+  .counter-num {
+    font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;
+    font-size:52px; line-height:1;
+    color:var(--nyp-blue-med);
+    min-width:70px; text-align:center;
+  }
+  .counter-info { flex:1; }
+  .counter-label {
+    font-family:'DM Mono',monospace;
+    font-size:10px; letter-spacing:0.12em;
+    text-transform:uppercase; color:var(--muted);
+    margin-bottom:4px;
+  }
+  .counter-sub { font-size:13px; color:var(--muted); line-height:1.5; }
+
+  /* SECTION LABEL */
+  .section-label {
+    font-family:'DM Mono',monospace; font-size:10px;
+    letter-spacing:0.14em; text-transform:uppercase;
+    color:var(--nyp-blue); padding:16px 0 8px;
+    display:flex; align-items:center; gap:8px;
+  }
+  .section-label::after { content:''; flex:1; height:1px; background:var(--divider); }
+
+  /* MONTH GRID */
+  .month-grid {
+    display:grid;
+    grid-template-columns:repeat(3,1fr);
+    gap:8px;
+    margin-bottom:8px;
+  }
+  .month-tile {
+    background:var(--card);
+    border:1px solid var(--divider);
+    border-radius:10px;
+    padding:12px 10px;
+    text-align:center;
+    cursor:pointer;
+    transition:all 0.15s;
+    position:relative;
+  }
+  .month-tile.attended {
+    border-color:#B8D4A8;
+    background:var(--success-bg);
+  }
+  .month-tile.future { opacity:0.45; cursor:default; }
+  .month-tile:not(.future):not(.attended):active { background:var(--accent-light); }
+  .tile-name {
+    font-size:13px; font-weight:600;
+    color:var(--nyp-black); margin-bottom:2px;
+  }
+  .month-tile.attended .tile-name { color:var(--nyp-green); }
+  .month-tile.future .tile-name { color:var(--muted); }
+  .tile-status {
+    font-family:'DM Mono',monospace;
+    font-size:10px; color:var(--muted);
+  }
+  .month-tile.attended .tile-status { color:var(--nyp-green); }
+  .tile-check {
+    position:absolute; top:6px; right:8px;
+    font-size:10px; color:var(--nyp-green);
+    opacity:0; transition:opacity 0.2s;
+  }
+  .month-tile.attended .tile-check { opacity:1; }
+
+  /* INFO NOTE */
+  .info-note {
+    background:var(--accent-light);
+    border-left:3px solid var(--nyp-blue);
+    border-radius:0 8px 8px 0;
+    padding:12px 14px;
+    font-size:12px; color:var(--nyp-blue-med);
+    line-height:1.5; margin-bottom:16px;
+  }
+
+  /* ANONYMOUS COUNT CARD */
+  .anon-card {
+    background:var(--card); border:1px solid var(--divider);
+    border-radius:12px; padding:16px; margin-bottom:16px;
+  }
+  .anon-row {
+    display:flex; align-items:center;
+    justify-content:space-between;
+    padding:8px 0;
+    border-bottom:1px solid var(--divider);
+    font-size:14px;
+  }
+  .anon-row:last-child { border-bottom:none; }
+  .anon-month { color:var(--nyp-black); font-weight:500; }
+  .anon-count {
+    font-family:'DM Mono',monospace; font-size:13px;
+    color:var(--nyp-blue-med);
+  }
+  .anon-bar {
+    height:4px; background:var(--divider);
+    border-radius:2px; margin-top:4px;
+    overflow:hidden; width:80px;
+  }
+  .anon-fill { height:100%; background:var(--nyp-blue); border-radius:2px; transition:width 0.4s; }
+
+  /* CHANGE NAME */
+  .change-name { text-align:center; padding:20px; font-size:12px; color:var(--nyp-gray-med); }
+  .change-name a { color:var(--nyp-blue); text-decoration:none; }
+
+  /* TOAST */
+  .toast {
+    position:fixed; bottom:24px; left:50%;
+    transform:translateX(-50%) translateY(80px);
+    background:var(--nyp-blue-dark); color:#fff;
+    font-size:13px; padding:10px 20px; border-radius:99px;
+    font-family:'DM Mono',monospace;
+    transition:transform 0.3s cubic-bezier(0.34,1.56,0.64,1);
+    z-index:100; white-space:nowrap; pointer-events:none;
+    border-left:3px solid var(--nyp-red);
+  }
+  .toast.show { transform:translateX(-50%) translateY(0); }
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<div class="header">
+  <div class="header-stripe"></div>
+  <div class="header-logo-row">
+    <span class="nyp-badge">NYP</span>
+    <span class="header-inst">NewYork-Presbyterian · Plastic Surgery</span>
+  </div>
+  <h1>M&M Attendance</h1>
+  <div class="header-sub">Morbidity &amp; Mortality Conference</div>
+  <div class="public-pill">Public attendance log</div>
+</div>
+
+<!-- SETUP SCREEN -->
+<div class="setup-screen" id="setupScreen">
+  <div class="setup-card">
+    <h2>Sign in to log attendance</h2>
+    <p>This is the attendance-only view. No CME tracking — just log that you were here. Your name stays private; only an anonymized count appears on the shared board.</p>
+
+    <label class="form-label">Your name</label>
+    <input class="text-input" type="text" id="nameInput" placeholder="e.g. Dr. Smith or Jane Lee (MS3)" />
+
+    <label class="form-label">Role</label>
+    <div class="role-row" id="roleRow">
+      <button class="role-btn" onclick="selectRole(this,'Attending')">Attending</button>
+      <button class="role-btn" onclick="selectRole(this,'Resident')">Resident</button>
+      <button class="role-btn" onclick="selectRole(this,'Fellow')">Fellow</button>
+      <button class="role-btn selected" onclick="selectRole(this,'Med Student')">Med Student</button>
+      <button class="role-btn" onclick="selectRole(this,'Other Faculty')">Other Faculty</button>
+    </div>
+
+    <button class="btn-primary" onclick="saveSetup()">Continue</button>
+  </div>
+</div>
+
+<!-- MAIN ATTENDANCE VIEW -->
+<div id="yearBarContainer"></div>
+<div class="main-view" id="mainView">
+
+  <div class="counter-card" id="counterCard"></div>
+
+  <div class="info-note">
+    Your name is kept private. The board below shows only an anonymized attendee count per session — visible to everyone with this link.
+  </div>
+
+  <div class="section-label">Your attendance this year</div>
+
+  <div class="month-grid" id="monthGrid"></div>
+
+  <div class="section-label">Division attendance board</div>
+  <div class="anon-card" id="anonBoard"></div>
+
+  <div class="change-name">
+    <a href="#" onclick="resetSetup()">Change name / switch user</a>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+const MONTHS=['January','February','March','April','May','June','July','August','September','October','November','December'];
+const SHORT=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+let currentYear=new Date().getFullYear();
+let selectedRole='Med Student';
+
+function selectRole(btn,role){
+  document.querySelectorAll('.role-btn').forEach(b=>b.classList.remove('selected'));
+  btn.classList.add('selected');
+  selectedRole=role;
+}
+
+function getKey(year,m){ return `att_${year}_${m}`; }
+function getAttended(year,m){ return localStorage.getItem(getKey(year,m))==='1'; }
+function setAttended(year,m,val){ localStorage.setItem(getKey(year,m),val?'1':'0'); }
+function getName(){ return localStorage.getItem('att_name')||''; }
+function getRole(){ return localStorage.getItem('att_role')||'Med Student'; }
+function getUserId(){
+  let id=localStorage.getItem('att_uid');
+  if(!id){ id='a_'+Math.random().toString(36).slice(2,10); localStorage.setItem('att_uid',id); }
+  return id;
+}
+
+function saveSetup(){
+  const val=document.getElementById('nameInput').value.trim();
+  if(!val) return;
+  localStorage.setItem('att_name',val);
+  localStorage.setItem('att_role',selectedRole);
+  init();
+}
+function resetSetup(){
+  localStorage.removeItem('att_name');
+  document.getElementById('setupScreen').style.display='block';
+  document.getElementById('mainView').style.display='none';
+  document.getElementById('yearBarContainer').innerHTML='';
+}
+
+function isFuture(m){
+  const now=new Date();
+  return currentYear>now.getFullYear()||(currentYear===now.getFullYear()&&m>now.getMonth());
+}
+function isPast(m){
+  const now=new Date();
+  return currentYear<now.getFullYear()||(currentYear===now.getFullYear()&&m<=now.getMonth());
+}
+
+function showToast(msg){
+  const t=document.getElementById('toast');
+  t.textContent=msg; t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'),2200);
+}
+
+// ── Supabase config ──
+const SB_URL = 'https://xsksttmpqcsbdapixmov.supabase.co';
+const SB_KEY = 'sb_publishable__D7Vmr2PW5x4NGckZ40H4A_82634lf1';
+
+async function sbFetch(path, method='GET', body=null){
+  const opts = {
+    method,
+    headers:{
+      'apikey': SB_KEY,
+      'Authorization': `Bearer ${SB_KEY}`,
+      'Content-Type': 'application/json',
+      'Prefer': method==='POST' ? 'resolution=merge-duplicates' : ''
+    }
+  };
+  if(body) opts.body = JSON.stringify(body);
+  return fetch(`${SB_URL}/rest/v1/${path}`, opts);
+}
+
+// Live division counts from Supabase (month index → count)
+let divisionCounts = {};
+
+async function fetchDivisionCounts(){
+  try {
+    const res = await sbFetch(`attendance_counts?year=eq.${currentYear}&select=month,count`);
+    if(!res.ok) return;
+    const rows = await res.json();
+    divisionCounts = {};
+    rows.forEach(r => divisionCounts[r.month] = r.count);
+  } catch(e){ console.warn('Could not fetch counts:', e); }
+}
+
+async function upsertMyAttendance(monthIdx, attended){
+  const uid  = getUserId();
+  const year = currentYear;
+  try {
+    await sbFetch('attendance_log', 'POST', {
+      uid, year,
+      month: monthIdx,
+      attended,
+      name: getName(),
+      role: getRole(),
+      updated_at: new Date().toISOString()
+    });
+    // Refresh board counts after upsert
+    await fetchDivisionCounts();
+    renderBoard();
+  } catch(e){ console.warn('Sync failed:', e); }
+}
+
+function buildYearBar(){
+  const container=document.getElementById('yearBarContainer');
+  container.innerHTML=`
+    <div class="year-bar">
+      <button class="year-btn" onclick="changeYear(-1)">&#8592;</button>
+      <span class="year-label" id="yearLabel">${currentYear}</span>
+      <button class="year-btn" onclick="changeYear(1)">&#8594;</button>
+    </div>
+  `;
+}
+
+function renderCounter(){
+  const attended=MONTHS.filter((_,i)=>getAttended(currentYear,i)).length;
+  const pastCount=MONTHS.filter((_,i)=>isPast(i)).length;
+  document.getElementById('counterCard').innerHTML=`
+    <div class="counter-num">${attended}</div>
+    <div class="counter-info">
+      <div class="counter-label">Sessions attended</div>
+      <div class="counter-sub">${pastCount} session${pastCount===1?'':'s'} held so far in ${currentYear}<br>
+        ${pastCount>0?Math.round(attended/pastCount*100):0}% attendance rate</div>
+    </div>
+  `;
+}
+
+function renderGrid(){
+  const grid=document.getElementById('monthGrid');
+  grid.innerHTML='';
+  MONTHS.forEach((name,i)=>{
+    const att=getAttended(currentYear,i);
+    const future=isFuture(i);
+    const div=document.createElement('div');
+    div.className=`month-tile${att?' attended':''}${future?' future':''}`;
+    div.innerHTML=`
+      <div class="tile-check">✓</div>
+      <div class="tile-name">${SHORT[i]}</div>
+      <div class="tile-status">${att?'attended':future?'upcoming':'tap to log'}</div>
+    `;
+    if(!future){ div.onclick=()=>toggleMonth(i); }
+    grid.appendChild(div);
+  });
+}
+
+function renderBoard(){
+  const board=document.getElementById('anonBoard');
+  const pastMonths=MONTHS.map((_,i)=>i).filter(i=>isPast(i));
+  if(pastMonths.length===0){
+    board.innerHTML=`<div style="font-size:13px;color:var(--muted);text-align:center;padding:12px">No sessions held yet this year</div>`;
+    return;
+  }
+  const maxCount=Math.max(...pastMonths.map(i=>divisionCounts[i]||0),1);
+  board.innerHTML=pastMonths.map(i=>{
+    const count=divisionCounts[i]||0;
+    const pct=Math.round(count/maxCount*100);
+    return `
+      <div class="anon-row">
+        <span class="anon-month">${MONTHS[i]}</span>
+        <div style="display:flex;align-items:center;gap:10px">
+          <div class="anon-bar"><div class="anon-fill" style="width:${pct}%"></div></div>
+          <span class="anon-count">${count} attendee${count===1?'':'s'}</span>
+        </div>
+      </div>
+    `;
+  }).join('');
+}
+
+async function render(){
+  document.getElementById('yearLabel').textContent=currentYear;
+  renderCounter(); renderGrid();
+  await fetchDivisionCounts();
+  renderBoard();
+}
+
+async function toggleMonth(i){
+  const was=getAttended(currentYear,i);
+  setAttended(currentYear,i,!was);
+  renderCounter(); renderGrid();
+  await upsertMyAttendance(i, !was);
+  showToast(!was?`${SHORT[i]} logged — thank you!`:`${SHORT[i]} removed`);
+}
+
+async function changeYear(d){ currentYear+=d; await render(); }
+
+async function init(){
+  const name=getName();
+  if(!name){
+    document.getElementById('setupScreen').style.display='block';
+    document.getElementById('mainView').style.display='none';
+    document.getElementById('yearBarContainer').innerHTML='';
+  } else {
+    document.getElementById('setupScreen').style.display='none';
+    document.getElementById('mainView').style.display='block';
+    buildYearBar();
+    await render();
+  }
+}
+
+document.getElementById('nameInput').addEventListener('keydown',e=>{ if(e.key==='Enter') saveSetup(); });
+init();
+</script>
+</body>
+</html>
